@@ -9,7 +9,7 @@ import { UserEntity } from "../../../utils/DB/entities/DBUsers";
 import { graphQLPost } from "./graphQLPost";
 import { graphQLProfile } from "./graphQLProfile";
 
-export const graphQLUser:GraphQLOutputType = new GraphQLObjectType({
+export const graphQLUser: GraphQLOutputType = new GraphQLObjectType({
   name: "GraphQLUser",
   fields: () => ({
     id: { type: GraphQLID },
@@ -17,6 +17,22 @@ export const graphQLUser:GraphQLOutputType = new GraphQLObjectType({
     lastName: { type: GraphQLString },
     email: { type: GraphQLString },
     subscribedToUserIds: { type: new GraphQLList(GraphQLString) },
+    subscribedToUser: {
+      type: new GraphQLList(graphQLUser),
+      resolve: async (source: UserEntity, args: unknown, { fastify }) =>
+        fastify.db.users.findMany({
+          key: "id",
+          equalsAnyOf: source.subscribedToUserIds,
+        }),
+    },
+    userSubscribedTo: {
+      type: new GraphQLList(graphQLUser),
+      resolve: async (source: UserEntity, args: unknown, { fastify }) =>
+        fastify.db.users.findMany({
+          key: "subscribedToUserIds",
+          inArray: source.id,
+        }),
+    },
     profile: {
       type: graphQLProfile,
       resolve: async (source: UserEntity, args: unknown, { fastify }) =>
