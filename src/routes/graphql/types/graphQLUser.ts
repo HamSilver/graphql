@@ -4,6 +4,9 @@ import {
   GraphQLString,
   GraphQLList,
   GraphQLOutputType,
+  GraphQLNonNull,
+  GraphQLInputType,
+  GraphQLInputObjectType,
 } from "graphql";
 import { UserEntity } from "../../../utils/DB/entities/DBUsers";
 import { graphQLPost } from "./graphQLPost";
@@ -49,5 +52,14 @@ export const graphQLUser: GraphQLOutputType = new GraphQLObjectType({
           equals: source.id,
         }),
     },
+  }),
+});
+
+export const graphQLCreateUser: GraphQLInputType = new GraphQLInputObjectType({
+  name: "GraphQLCreateUser",
+  fields: () => ({
+    firstName: { type: new GraphQLNonNull(GraphQLString) },
+    lastName: { type: new GraphQLNonNull(GraphQLString) },
+    email: { type: new GraphQLNonNull(GraphQLString) },
   }),
 });

@@ -3,6 +3,7 @@ import { GraphQLSchema } from "graphql";
 import { getGraphQLQuery } from "./getGraphQLQuery";
 import { graphqlBodySchema } from "./schema";
 import { graphql } from "graphql";
+import { getGraphQLMutation } from "./getGraphQLMutation";
 
 const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
   fastify
@@ -19,6 +20,7 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
       const variableValues = request.body.variables;
       const schema = new GraphQLSchema({
         query: await getGraphQLQuery(this),
+        mutation: await getGraphQLMutation(this),
       });
 
       return await graphql({
