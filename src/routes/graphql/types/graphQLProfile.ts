@@ -4,6 +4,8 @@ import {
   GraphQLString,
   GraphQLInt,
 } from "graphql";
+import { ProfileEntity } from "../../../utils/DB/entities/DBProfiles";
+import { graphQLMemberType } from "./graphQLMemberType";
 
 export const graphQLProfile = new GraphQLObjectType({
   name: "GraphQLProfile",
@@ -17,5 +19,13 @@ export const graphQLProfile = new GraphQLObjectType({
     city: { type: GraphQLString },
     memberTypeId: { type: GraphQLID },
     userId: { type: GraphQLID },
+    memberType: {
+      type: graphQLMemberType,
+      resolve: async (source: ProfileEntity, args: unknown, { fastify }) =>
+        fastify.db.memberTypes.findOne({
+          key: "id",
+          equals: source.memberTypeId,
+        }),
+    },
   }),
 });
